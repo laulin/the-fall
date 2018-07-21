@@ -36,6 +36,18 @@ class Bases:
 
         return base._asdict()[field]
 
+    def inc_level(self, player_id, building):
+        # this function inc the building level
+        base = self._base_dict[player_id]
+        field = "level_{}".format(building)
+
+        if field not in base._fields:
+            raise Exception("building {} doesn't exists".format(building))
+
+        value = base._asdict()[field]
+        new_base = base._replace(**{field : value +1})
+        self._base_dict[player_id] = new_base
+
 class TestBases(unittest.TestCase):
     def test_init(self):
         bases = Bases()
@@ -69,6 +81,16 @@ class TestBases(unittest.TestCase):
 
         with self.assertRaises(Exception):
             bases.get_level(player_id-1, "trading_post")
+
+    def test_inc_level(self):
+        bases = Bases()
+        player_id = 10
+        bases.create(player_id)
+
+        bases.inc_level(player_id, "trading_post")
+        result = bases.get_level(player_id, "trading_post")
+
+        self.assertEqual(result, 1)
 
 
 if __name__ == "__main__":
