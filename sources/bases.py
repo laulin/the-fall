@@ -1,6 +1,5 @@
 import unittest
 from collections import namedtuple
-from itertools import cycle
 
 # this module manages the value's base of each player. The main key is the 
 # player_id.
