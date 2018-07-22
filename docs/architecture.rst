@@ -6,6 +6,60 @@ Architecture
 game play 
 =========
 
+Top level action
+----------------
+
+*create a player*
+
+parameters :
+- nickname
+- email 
+- password
+
+do :
+- add a row in Player table with parameters
+- add a row in Base table with initial base values 
+- add a row in Technologies with initial technologie values 
+- add a row in Unit with initial unit 
+- add many row in Blueprint with initial blueprints 
+
+conditions:
+- nickname doesn't exist
+- email doesn't exist 
+- password is secure
+
+*login*
+
+parameters :
+- email 
+- password (hashed + salt)
+
+conditions :
+- email is valid
+- password is valid
+
+return:
+- a session token, used by all commands
+- a player_id, unique for the player
+
+do:
+- set the session_id in the player
+
+*logout*
+
+parameters:
+- a session token
+- a player_id
+
+do:
+- NULL the field session_id of the player 
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+
+
+
 parameters
 ----------
 
