@@ -3,13 +3,13 @@ Architecture
 
 **This is a draft document. As a proposal, it can be changed and your contribution is welcome !**
 
-game play 
-=========
-
 Top level action
-----------------
+================
 
-*create a player*
+This chapter describes each command that can be done by a player.
+
+create a player
+---------------
 
 parameters :
 - nickname
@@ -28,7 +28,10 @@ conditions:
 - email doesn't exist 
 - password is secure
 
-*login*
+
+
+login
+-----
 
 parameters :
 - email 
@@ -45,7 +48,10 @@ return:
 do:
 - set the session_id in the player
 
-*logout*
+
+
+logout
+------
 
 parameters:
 - a session token
@@ -60,8 +66,68 @@ conditions:
 
 
 
-parameters
-----------
+get ressources
+--------------
+
+parameters:
+- a session token
+- a player_id
+
+return:
+- supply quantity
+- ammo quantity
+- gasoline quantity
+
+do:
+- update travel mecanism
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+
+
+
+get building level
+------------------
+
+parameters:
+- a session token
+- a player_id
+
+return:
+- trading_post level
+- weapon_factory level
+- vehicule_warehouse level
+- barack level
+- hq level
+
+do:
+- update building mecanism
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+
+
+get units in the base
+---------------------
+
+parameters:
+- a session token
+- a player_id
+
+return:
+- a list of units (infantry, vehicule, defense) and the number of each available
+
+do:
+- update building and traveling mecanism
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+
+Battle modeling
+===============
 
 Those parameters are interessing for the battle modeling only.
 
@@ -111,8 +177,8 @@ A defense is special unit which can move from the base.
 - target priority : give a priority list of unit targeted by the unit. For example, bazooka unit could have this list : [tank, light vehicule, infantry]
 - class : infantry, light armored , medium armored, heavy armored
 
-technologies
-------------
+Technologies
+============
 
 barack:
 
@@ -137,7 +203,7 @@ trading post:
 - scaverage : increase the change to find blueprint
 
 HQ:
-
+**needed ?**
 
 Data structure
 ==============
