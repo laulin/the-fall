@@ -3,6 +3,21 @@ Architecture
 
 **This is a draft document. As a proposal, it can be changed and your contribution is welcome !**
 
+ID everywhere
+=============
+
+In the following document, we use XXXX_id. In one hand, their are player_id, travel_id, make_id which are typically 
+incremental unique integer without signification. In other hand, building, technlogy, vehicule (and so on) have 
+an ID. To make it easy, let's use a convention :
+
+- range 0-99 : building (warehouse, trade post, etc.)
+- range 100-199 : technology 
+- range 200-299 : infantery
+- range 300-399 : vehicule 
+- range 400-499 : defense 
+
+We should call them *object_id*
+
 Top level action
 ================
 
@@ -127,48 +142,6 @@ conditions:
 - session_id of the player is valid
 
 
-upgrade building
-----------------
-
-parameters:
-- a session token
-- a player_id
-- building 
-
-do:
-- remove ressources 
-- add building to the building list
-
-conditions:
-- player_id exists
-- session_id of the player is valid
-- building is valid 
-- ressources are available
-- technologies/buildings are compliance
-- the building is not still upgrading
-
-
-upgrade technologie
--------------------
-
-parameters:
-- a session token
-- a player_id
-- technology 
-
-do:
-- remove ressources 
-- add technologie to the building list
-
-conditions:
-- player_id exists
-- session_id of the player is valid
-- technlologie is valid 
-- ressources are available
-- technologies/buildings are compliance
-- the technologies is not still upgrading
-
-
 get blueprints
 --------------
 
@@ -184,46 +157,100 @@ returns:
 - list of blueprint_id 
 
 
-build vehicule/defense 
-----------------------
+building
+--------
 
 parameters:
 - a session token
 - a player_id
-- blueprint_id 
-- number
+- object_id 
+- source object_id (for infantery only)
+- number (for unit only)
 
 do:
-- add row per vehicule in the building list (FIFO)
+- remove ressources 
+- add object_id to the building list
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+- object_id is valid 
+- ressources are available
+- technologies/buildings are compliance
+- [technology/building only] the building is not in progress
+
+
+get building list
+-----------------
+
+parameters:
+- a session token
+- a player_id
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+
+return:
+- list of make_id, building_type, object_id, start_timestamp, end_timestamp
+
+cancel building 
+---------------
+
+parameters:
+- a session token
+- a player_id
+- make_id 
+
+do:
+- add ressources 
+- remove from the building list
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+
+attack
+------
+
+parameters:
+- a session token
+- a player_id
+- a target_id 
+- a list of (object_id, number)
+
+do:
 - remove ressources
+- add row in travel table 
+- split entry in unit table and set travel_id
 
 conditions:
 - player_id exists
 - session_id of the player is valid
 - ressources are available
-- technologies/buildings are compliance
+- target_id exists
+- if vehicules are used, crew must be all present
+- units must be available
+- unit can be a defense
 
-equip infantry 
---------------
+list travel
+-----------
 
 parameters:
 - a session token
 - a player_id
-- blueprint_id 
-- number
-- source unit (blueprint_id)
-
-do:
-- add row per infantery in the building list (FIFO)
-- remove ressources
-- remove unit
 
 conditions:
 - player_id exists
 - session_id of the player is valid
-- ressources are available
-- technologies/buildings are compliance
-- source unit is infantery
+
+return:
+- list of:
+    - travel_id
+    - start/end timestamp
+    - list of (object_id, number)
+    - target_id
+    - ressources
 
 Battle modeling
 ===============
@@ -356,18 +383,17 @@ Blueprint
 ---------
 
 - player_id : external key
-- blueprint_id : integer
+- object_id : integer
 
 
 Building
 --------
 
+- make_id : unique integer key
 - player_id : external key
-- building_type : integer; 1 for unit, 2 for building, 3 for technologie 
-- blueprint_id : integer; reference to the blueprint owned by the player_id (to be assert), zero otherwise 
-- building_id : integer, reference to the  building, zero otherwise 
-- techno_id : integer, reference to the technologie, zero otherwise
-- final_timestamp : integer (long ?), timstamp 
+- object_id : integer
+- start_timestamp : integer (long ?), timstamp 
+- end_timestamp : integer (long ?), timstamp 
 
 Travel 
 ------
@@ -375,7 +401,8 @@ Travel
 - travel_id : integer primary key 
 - player_id : external key
 - target_id : external key to another player id, zero if not a player targeted
-- final_timestamp : integer (long ?), timstamp 
+- start_timestamp : integer (long ?), timstamp 
+- end_timestamp : integer (long ?), timstamp 
 - type : integer; 1 - attack, 2 - exploration, 3 - transport
 - direction : bool
 - ressource_supply : integer
@@ -387,8 +414,7 @@ Unit
 ----
 
 - player_id : external key
-- blueprint_id : integer; reference to the blueprint owned by the player_id
+- object_id : integer; reference to the blueprint owned by the player_id
 - number : integer; how many unit is owned 
-- type : integer; 1 for infantry, 2 for vehicule, 3 for defense
 - travel_id: reference to the travel, zero if in a base 
 - base_id: reference of the base when not traveling. travel_id xor base_id must be valid 
