@@ -126,6 +126,105 @@ conditions:
 - player_id exists
 - session_id of the player is valid
 
+
+upgrade building
+----------------
+
+parameters:
+- a session token
+- a player_id
+- building 
+
+do:
+- remove ressources 
+- add building to the building list
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+- building is valid 
+- ressources are available
+- technologies/buildings are compliance
+- the building is not still upgrading
+
+
+upgrade technologie
+-------------------
+
+parameters:
+- a session token
+- a player_id
+- technology 
+
+do:
+- remove ressources 
+- add technologie to the building list
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+- technlologie is valid 
+- ressources are available
+- technologies/buildings are compliance
+- the technologies is not still upgrading
+
+
+get blueprints
+--------------
+
+parameters:
+- a session token
+- a player_id
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+
+returns:
+- list of blueprint_id 
+
+
+build vehicule/defense 
+----------------------
+
+parameters:
+- a session token
+- a player_id
+- blueprint_id 
+- number
+
+do:
+- add row per vehicule in the building list (FIFO)
+- remove ressources
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+- ressources are available
+- technologies/buildings are compliance
+
+equip infantry 
+--------------
+
+parameters:
+- a session token
+- a player_id
+- blueprint_id 
+- number
+- source unit (blueprint_id)
+
+do:
+- add row per infantery in the building list (FIFO)
+- remove ressources
+- remove unit
+
+conditions:
+- player_id exists
+- session_id of the player is valid
+- ressources are available
+- technologies/buildings are compliance
+- source unit is infantery
+
 Battle modeling
 ===============
 
