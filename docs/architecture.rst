@@ -9,7 +9,7 @@ game play
 parameters
 ----------
 
-Those parameters are interessing for the fight modeling.
+Those parameters are interessing for the battle modeling only.
 
 infantry:
 
@@ -41,7 +41,21 @@ A vehicule is a generic approach. The class define the type of vehicule.
 - target priority : give a priority list of unit targeted by the unit. For example, bazooka unit could have this list : [tank, light vehicule, infantry]
 - crew : number of infantry need to drive the vehicule 
 - passager : number of infantry hosted
-- class : can be : transport vehicule, light armored vehicule, medium armored vehicule, heavy armored vehicule
+- class : can be : transport vehicule, light armored , medium armored, heavy armored
+
+defense:
+
+A defense is special unit which can move from the base.
+
+- health : points
+- armor : equilvalent in mm of steel
+- damage : number of points removed to the health
+- penetration : equivalent in mm of steel penetrated
+- shot per round : number of shot done in a round of simulation
+- ammo needed : per travel, number of munition needed
+- accuracy : chance to hit target par shot
+- target priority : give a priority list of unit targeted by the unit. For example, bazooka unit could have this list : [tank, light vehicule, infantry]
+- class : infantry, light armored , medium armored, heavy armored
 
 technologies
 ------------
