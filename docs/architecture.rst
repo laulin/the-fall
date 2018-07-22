@@ -93,14 +93,14 @@ Player
 
 - player_id : unique integer key 
 - email : unique string
-- password : string
-- nickname : unique string 
+- password : string; should store the hash !
+- nickname : unique string
+- session_id : hash, used as a tocken
 
 
 Base
 ----
 
-- base_id : unique integer key 
 - player_id : external key
 - building_trading_post : integer
 - building_weapon_factory : integer
@@ -112,6 +112,12 @@ Base
 - ressource_gasoline : integer
 - x : integer
 - y : integer
+
+
+Technologies
+------------
+
+- player_id : external key
 - techno_infantry_speed : integer
 - techno_infantry_armor : integer
 - techno_infantry_damage : integer
@@ -125,3 +131,45 @@ Base
 - techno_vehicule_consumption : integer
 - techno_vehicule_ammo : integer
 - techno_trade_blueprint : integer
+
+
+Blueprint 
+---------
+
+- player_id : external key
+- blueprint_id : integer
+
+
+Building
+--------
+
+- player_id : external key
+- building_type : integer; 1 for unit, 2 for building, 3 for technologie 
+- blueprint_id : integer; reference to the blueprint owned by the player_id (to be assert), zero otherwise 
+- building_id : integer, reference to the  building, zero otherwise 
+- techno_id : integer, reference to the technologie, zero otherwise
+- final_timestamp : integer (long ?), timstamp 
+
+Travel 
+------
+
+- travel_id : integer primary key 
+- player_id : external key
+- target_id : external key to another player id, zero if not a player targeted
+- final_timestamp : integer (long ?), timstamp 
+- type : integer; 1 - attack, 2 - exploration, 3 - transport
+- direction : bool
+- ressource_supply : integer
+- ressource_ammo : integer
+- ressource_gasoline : integer
+
+
+Unit 
+----
+
+- player_id : external key
+- blueprint_id : integer; reference to the blueprint owned by the player_id
+- number : integer; how many unit is owned 
+- type : integer; 1 for infantry, 2 for vehicule, 3 for defense
+- travel_id: reference to the travel, zero if in a base 
+- base_id: reference of the base when not traveling. travel_id xor base_id must be valid 
